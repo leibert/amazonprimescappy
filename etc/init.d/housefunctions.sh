@@ -1,19 +1,19 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          myservice
+# Provides:          housefunctions
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: house functions
-# Description:       coffee dasher
+# Description:       looks for dashes and updates buses
 ### END INIT INFO
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
 DIR=/etc/housefunctions
-DAEMON=$DIR/coffee.py
-DAEMON_NAME=housecoffee
+DAEMON=$DIR/housepi.py
+DAEMON_NAME=housefunctions
 
 # Add any command line options for your daemon here
 DAEMON_OPTS=""
