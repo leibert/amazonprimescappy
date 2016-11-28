@@ -2,7 +2,7 @@
 
 import time
 import requests
-import scapy
+from scapy.all import *
 
 import logging
 import logging.handlers
@@ -10,8 +10,8 @@ import argparse
 import sys
 import time
 
-sys.path.append('/home/leibert/Documents/gitRepos/datacollectionbot')
-from databot import *
+sys.path.append('/home/leibert/pyScripts')
+from datacollectionbot.databot import *
 
 
 # Deafults
@@ -63,9 +63,12 @@ sys.stderr = MyLogger(logger, logging.ERROR)
 
 i = 0
 
-
-
 def arp_display(pkt):
+    global lastminute
+    if time.localtime().tm_min != lastminute:
+        lastminute=time.localtime().tm_min
+        updateCMDCTRL()
+
     if pkt[ARP].op == 1:  #who-has (request)
 
         #		print 'whois'
@@ -87,7 +90,7 @@ def arp_display(pkt):
             print time.time()
             print 'ON DASH B'
             try:
-                r = requests.post("http://192.168.0.76/LIGHTS=TOGGLE", data={'submit': 'randomshit'})
+                r = requests.post("http://192.168.0.0/LIGHTS=TOGGLE", data={'submit': 'randomshit'})
                 print(r.status_code, r.reason)
                 print(r.text)
                 time.sleep(5)
@@ -111,17 +114,14 @@ def arp_display(pkt):
             except:
                 print 'lightESP error'
 
+
 # Loop forever, doing something useful hopefully:
 # while True:
 # program loop continuously running
 while True:
-    print "loop"
-    # print sniff(prn=arp_display, filter="arp", store=0, count=0)
-    if (time.localtime().tm_min != lastminute):
-        print "it's been a minute"
-        lastminute=time.localtime().tm_min
-        updateCMDCTRL()
-        print lastminute
+    print sniff(prn=arp_display, filter="arp", store=0, count=0)
+
+
 
 
 
