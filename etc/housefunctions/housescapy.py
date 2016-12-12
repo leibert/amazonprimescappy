@@ -2,6 +2,7 @@
 
 import time
 import requests
+#import scapy.all
 from scapy.all import *
 
 import logging
@@ -41,7 +42,7 @@ handler.setFormatter(formatter)
 # Attach the handler to the logger
 logger.addHandler(handler)
 
-lastminute = 0  # holder for minute timer
+# lastminute = 0  # holder for minute timer
 
 
 # Make a class we can use to capture stdout and sterr in the log
@@ -64,10 +65,10 @@ sys.stderr = MyLogger(logger, logging.ERROR)
 i = 0
 
 def arp_display(pkt):
-    global lastminute
-    if time.localtime().tm_min != lastminute:
-        lastminute=time.localtime().tm_min
-        updateCMDCTRL()
+    # global lastminute
+    # if time.localtime().tm_min != lastminute:
+    #     lastminute=time.localtime().tm_min
+    #     updateCMDCTRL()
 
     if pkt[ARP].op == 1:  #who-has (request)
 
@@ -79,7 +80,7 @@ def arp_display(pkt):
             print time.time()
             print 'ON DASH A'
             try:
-                r = requests.post("http://192.168.0.76/LIGHTS=TOGGLE", data={'submit': 'randomshit'})
+                r = requests.post("http://192.168.0.31/cgi-bin/IOS/ios.py?mode=execmacro&macroID=4", data={'submit': 'randomshit'})
                 print(r.status_code, r.reason)
                 print(r.text)
                 time.sleep(5)
@@ -89,6 +90,7 @@ def arp_display(pkt):
         elif pkt[ARP].hwsrc == '10:ae:60:f0:ce:0a':
             print time.time()
             print 'ON DASH B'
+	    updateState("DASHB","TS")
             try:
                 r = requests.post("http://192.168.0.0/LIGHTS=TOGGLE", data={'submit': 'randomshit'})
                 print(r.status_code, r.reason)
@@ -100,6 +102,7 @@ def arp_display(pkt):
         elif pkt[ARP].hwsrc == '74:c2:46:5b:8b:a4':
             print time.time()
             print 'coffee dash!'
+	    updateState("coffee","TS")
             try:
                 r = requests.post("http://192.168.0.30/coffee.php?potid=fl1", data={'submit': 'randomshit'})
                 print(r.status_code, r.reason)
@@ -120,6 +123,7 @@ def arp_display(pkt):
 # program loop continuously running
 while True:
     print sniff(prn=arp_display, filter="arp", store=0, count=0)
+    # sleep(1000)
 
 
 

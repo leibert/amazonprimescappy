@@ -12,8 +12,8 @@
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
 DIR=/home/leibert/pyScripts/housefunctions
-DAEMON=$DIR/housepi.py
-DAEMON_NAME=housefunctions
+DAEMON=$DIR/housescapy.py
+DAEMON_NAME=housescapy
 
 # Add any command line options for your daemon here
 DAEMON_OPTS=""
