@@ -11,7 +11,7 @@ import argparse
 import sys
 import time
 
-sys.path.append('/home/leibert/pyScripts')
+#sys.path.append('/home/leibert/pyScripts')
 from datacollectionbot.databot import *
 
 

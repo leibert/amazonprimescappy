@@ -1,0 +1,3 @@
+scapy
+-e git+https://github.com/leibert/datacollectionbot.git#egg=datacollectionbot
+requests
