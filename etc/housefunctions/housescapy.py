@@ -80,7 +80,7 @@ def arp_display(pkt):
             print time.time()
             print 'ON DASH A'
             try:
-                r = requests.post("http://192.168.0.31/cgi-bin/IOS/ios.py?mode=execmacro&macroID=4", data={'submit': 'randomshit'})
+                r = requests.get("http://192.168.0.31/cgi-bin/IOS/ios.py?mode=execmacro&macroID=4")
                 print(r.status_code, r.reason)
                 print(r.text)
                 time.sleep(5)
@@ -88,21 +88,9 @@ def arp_display(pkt):
                 print 'Backyard light error'
 
         elif pkt[ARP].hwsrc == '10:ae:60:f0:ce:0a':
-            print time.time()
-            print 'ON DASH B'
-	    updateState("DASHB","TS")
-            try:
-                r = requests.post("http://192.168.0.0/LIGHTS=TOGGLE", data={'submit': 'randomshit'})
-                print(r.status_code, r.reason)
-                print(r.text)
-                time.sleep(5)
-            except:
-                print 'Backyard light error'
-
-        elif pkt[ARP].hwsrc == '74:c2:46:5b:8b:a4':
-            print time.time()
-            print 'coffee dash!'
-	    updateState("coffee","TS")
+	        print time.time()
+            print 'coffee dash!/old DASH B'
+            updateState("coffee","TS")
             try:
                 r = requests.post("http://192.168.0.30/coffee.php?potid=fl1", data={'submit': 'randomshit'})
                 print(r.status_code, r.reason)
@@ -116,6 +104,26 @@ def arp_display(pkt):
                 print(r.text)
             except:
                 print 'lightESP error'
+            
+
+
+       # elif pkt[ARP].hwsrc == '74:c2:46:5b:8b:a4': BATTERY DIED
+#            print time.time()
+ #           print 'coffee dash!'
+#	    updateState("coffee","TS")
+ #           try:
+  #              r = requests.post("http://192.168.0.30/coffee.php?potid=fl1", data={'submit': 'randomshit'})
+   #             print(r.status_code, r.reason)
+    #            print(r.text)
+     #       except:
+      #          print 'coffee server error'
+#
+ #           try:
+  #              r = requests.post("http://192.168.0.50/coffeemadeGOGOGO", data={'submit': 'randomshit'})
+   #             print(r.status_code, r.reason)
+    #            print(r.text)
+     #       except:
+      #          print 'lightESP error'
 
 
 # Loop forever, doing something useful hopefully:
