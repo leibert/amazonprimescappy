@@ -21,8 +21,7 @@ LOG_LEVEL = logging.INFO  # Could be e.g. "DEBUG" or "WARNING"
 
 # Define and parse command line arguments
 parser = argparse.ArgumentParser(description="My simple Python service")
-parser.add_argument(
-    "-l", "--log", help="file to write log to (default '" + LOG_FILENAME + "')")
+parser.add_argument("-l", "--log", help="file to write log to (default '" + LOG_FILENAME + "')")
 
 # If the log file is specified on the command line then override the default
 args = parser.parse_args()
@@ -102,9 +101,16 @@ def detect_button(pkt):
             print time.time()
 
         elif pkt[Ether].src == '44:65:0d:d9:c3:97':
-            print 'd9:c3:97 Detected - TEST BUTTON 2'
+            print 'd9:c3:97 Detected - coffee'
             print time.time()
-
+	        updateState("coffee", "TS")
+            try:
+                r = requests.get("http://192.168.0.15/coffeemadeGOGOGO")
+                print(r.status_code, r.reason)
+                print(r.text)
+                time.sleep(5)
+            except:
+                print 'error contacting 0.15'
 
         elif pkt[Ether].src == '10:ae:60:f0:ce:0b':
             print 'DASH f0:ce:0b Detected - LOWER PORCH BUTTON'
@@ -122,16 +128,8 @@ def detect_button(pkt):
                 print 'IOS Server Error'
 
         elif pkt[Ether].src == '44:65:0d:26:a9:35':
-            print 'DASH 26:a9:35 Detected - COFFEE'
+            print 'DASH 26:a9:35 Detected - test button 3'
             print time.time()
-            updateState("coffee", "TS")
-
-            try:
-                r = requests.get("http://192.168.0.15/coffeemadeGOGOGO")
-                print(r.status_code, r.reason)
-                print(r.text)
-            except:
-                print 'error contacting 0.15'
 
 
 # Loop forever, doing something useful hopefully:
