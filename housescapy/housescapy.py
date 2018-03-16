@@ -44,7 +44,7 @@ handler.setFormatter(formatter)
 # Attach the handler to the logger
 logger.addHandler(handler)
 
-# lastminute = 0  # holder for minute timer
+lasttrigger = time.time()-5  # holder for last trigger to debounce dash buttons
 
 updateState("test", "TS")
 
@@ -71,38 +71,34 @@ i = 0
 
 
 def detect_button(pkt):
-    # global lastminute
-    # if time.localtime().tm_min != lastminute:
-    #     lastminute=time.localtime().tm_min
-    #     updateCMDCTRL()
-    # print all ARP packets. This is helpful to find new das buttons
-    #    if pkt[ARP].op == 1 and pkt.haslayer(ARP) and pkt[ARP].psrc == '0.0.0.0':
-    #        print "ARP Packet detected"
-    #        print pkt[ARP].hwsrc
+    global lasttrigger
 
-    # we only care about DHCP packets
-    if pkt.haslayer(DHCP):
+    # we only care about DHCP packets and if it's been more than 5 seconds from the last Dash push (for debouncing)
+    if pkt.haslayer(DHCP) and (time.time()-lasttrigger) > 5:
+
+        #stuff to debug the debouncing stuff
+        #print "lasttrigger"
+        #print lasttrigger
+        #print "currenttime"
+        #print time.time()
+        #print "delta:"
+        #print (time.time()-lasttrigger)
+
         # start checking source of packets to see if they came from a known dash button
         if pkt[Ether].src == '00:bb:3a:6f:02:21':
             print "DASH 02:21 Detected - TEST"
             print time.time()
-
-            try:
-                r = requests.post("http://192.168.0.31/cgi-bin/IOS/ios.py?mode=execmacro&macroID=4", data={'submit': 'randomshit'})
-                print(r.status_code, r.reason)
-                print(r.text)
-                time.sleep(5)
-
-            except:
-                print 'Backyard light error'
+            lasttrigger = time.time()
 
         elif pkt[Ether].src == '10:ae:60:f0:ce:0a':
             print 'DASH f0:ce:0a Detected - TEST BUTTON'
             print time.time()
+            lasttrigger = time.time()
 
         elif pkt[Ether].src == '44:65:0d:d9:c3:97':
             print 'd9:c3:97 Detected - coffee'
             print time.time()
+            lasttrigger = time.time()
             updateState("coffee", "TS")
             try:
                 r = requests.get("http://192.168.0.15/coffeemadeGOGOGO")
@@ -110,11 +106,13 @@ def detect_button(pkt):
                 print(r.text)
             except:
                 print 'error contacting 0.15'
-            time.sleep(5)
+
+
 
         elif pkt[Ether].src == '10:ae:60:f0:ce:0b':
             print 'DASH f0:ce:0b Detected - LOWER PORCH BUTTON'
             print time.time()
+            lasttrigger = time.time()
             updateState("DASHB", "TS")
 
             try:
@@ -124,11 +122,12 @@ def detect_button(pkt):
         # sleep to debounce
             except:
                 print 'IOS Server Error'
-            time.sleep(5)
+
 
         elif pkt[Ether].src == '44:65:0d:26:a9:35':
             print 'DASH 26:a9:35 Detected - test button 3'
             print time.time()
+            lasttrigger = time.time()
 
 
 # Loop forever, doing something useful hopefully:
